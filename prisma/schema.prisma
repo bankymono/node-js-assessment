@@ -1,0 +1,77 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "mysql"
+  url      = env("DATABASE_URL")
+}
+
+
+model Character {
+  id Int @id @default(autoincrement())
+  firstName String
+  lastName String 
+  status StatusType
+  stateOfOrigin String?
+  gender GenderType
+  location Location?
+  episodes Episode[]
+
+  created DateTime @default(now())
+  updated DateTime @updatedAt
+
+  @@map("characters")
+}
+
+model Location {
+  id Int @id @default(autoincrement())
+  name String
+  latitude Float
+  longitude Float
+  created DateTime @default(now())
+  updated DateTime @updatedAt
+  character Character @relation(fields: [characterId], references: [id])
+  characterId Int
+
+  @@map("locations")
+}
+
+model Episode {
+  id Int @id @default(autoincrement())
+  created DateTime @default(now())
+  updated DateTime @updatedAt
+  name String
+  releaseDate DateTime
+  episodeCode String
+  characters Character[]
+  episodeComments Comment[]
+
+  @@map("episodes")
+}
+
+model Comment {
+  id Int @id @default(autoincrement())
+  created DateTime @default(now())
+  updated DateTime @updatedAt
+  comment String @db.VarChar(250)
+  ipAddressLocation String
+  episodeId Int
+  episode Episode @relation(fields: [episodeId], references: [id])
+
+  @@map("comments")
+}
+
+enum StatusType{
+  ACTIVE
+  DEAD
+  UNKNOWN
+}
+
+enum GenderType{
+  MALE
+  FEMALE
+}
