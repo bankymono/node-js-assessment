@@ -46,12 +46,13 @@ model Episode {
   updated DateTime @updatedAt
   name String
   releaseDate DateTime
-  episodeCode String
+  episodeCode String @unique
   characters Character[]
   episodeComments Comment[]
 
   @@map("episodes")
 }
+
 
 model Comment {
   id Int @id @default(autoincrement())
@@ -60,7 +61,7 @@ model Comment {
   comment String @db.VarChar(250)
   ipAddressLocation String
   episodeId Int
-  episode Episode @relation(fields: [episodeId], references: [id])
+  episode Episode @relation(fields: [episodeId], references: [id], onDelete: Cascade)
 
   @@map("comments")
 }
